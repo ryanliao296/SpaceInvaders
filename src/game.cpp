@@ -2,9 +2,10 @@
 #include <iostream>
 using namespace std;
 
+//Constructor that initializes the game by creating obstacles
 Game::Game()
 {
-
+    obstacles = CreateObstacles();
 }
 
 Game::~Game()
@@ -23,10 +24,9 @@ void Game::Update()
 
     //delete any inactive lasers
     DeleteInactiveLasers();
-    cout << "Vector size: " << spaceship.lasers.size() << endl;
 }
 
-//Draws each object of the game (spaceships and lasers)
+//Draws each object of the game (spaceships,lasers and obstacles)
 void Game::Draw()
 {
     spaceship.Draw();
@@ -34,6 +34,11 @@ void Game::Draw()
     for(auto& laser: spaceship.lasers)
     {
         laser.Draw();
+    }
+
+    for(auto& obstacle: obstacles)
+    {
+        obstacle.Draw();
     }
 }
 
@@ -64,6 +69,23 @@ void Game::DeleteInactiveLasers()
             it = spaceship.lasers.erase(it);
         }
         else
-            ++it;
+            it++;
     }
+}
+
+//Method to create obstacles used in game constructor
+vector<Obstacle> Game::CreateObstacles()
+{
+    //get width of obstacles and space in between each one
+    int obstacleWidth = Obstacle::grid[0].size() * 3;
+    float space = (GetScreenWidth() - (4 * obstacleWidth)) / 5;
+
+    //create the four obstacles
+    for(int i = 0; i < 4; i++)
+    {
+        float offset = (i + 1) * space + i * obstacleWidth;
+        obstacles.push_back(Obstacle({offset, float(GetScreenHeight() - 100)}));
+    }
+
+    return obstacles;
 }
