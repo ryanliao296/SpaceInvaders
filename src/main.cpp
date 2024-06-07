@@ -1,6 +1,6 @@
 #include <raylib.h>
 #include "game.hpp"
-#include "obstacle.hpp"
+
 
 int main()
 {
@@ -12,7 +12,7 @@ int main()
     SetTargetFPS(60);
 
     Game game;
-    
+
 
     while(WindowShouldClose() == false)
     {
