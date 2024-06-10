@@ -50,6 +50,12 @@ void Alien::UnloadImages()
     }
 }
 
+//method to give a rectangle of the alien's position to check for collisions 
+Rectangle Alien::GetRect()
+{
+    return {position.x, position.y, float(alienImages[type - 1].width), float(alienImages[type - 1].height)};
+}
+
 //moves the aliens left and right
 void Alien::Update(int direction)
 {

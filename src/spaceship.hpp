@@ -14,6 +14,8 @@ class Spaceship
         void MoveRight();
         void ShootLaser();
         vector<Laser> lasers;
+        Rectangle GetRect();
+        void Reset();
 
     private:
         Texture2D image;

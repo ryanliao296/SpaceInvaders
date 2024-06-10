@@ -5,7 +5,7 @@ Spaceship::Spaceship()
 {
     image = LoadTexture("Graphics/spaceship.png");
     position.x = (GetScreenWidth() - image.width)/2;
-    position.y = GetScreenHeight()- image.height;
+    position.y = GetScreenHeight()- image.height - 100;
     lastShotTime = 0;
 }
 
@@ -26,9 +26,9 @@ void Spaceship::MoveLeft()
 {
     position.x -= 7;
 
-    if(position.x < 0)
+    if(position.x < 25)
     {
-        position.x =  0;
+        position.x = 25;
     }
 }
 
@@ -37,9 +37,9 @@ void Spaceship::MoveRight()
 {
     position.x += 7;
 
-    if(position.x > GetScreenWidth() - image.width)
+    if(position.x > GetScreenWidth() - image.width - 25)
     {
-        position.x = GetScreenWidth() - image.width;
+        position.x = GetScreenWidth() - image.width - 25;
     }
 }
 
@@ -52,4 +52,18 @@ void Spaceship::ShootLaser()
         lasers.push_back(Laser({position.x + image.width/2 - 2,position.y},-6));
         lastShotTime = GetTime();
     }
+}
+
+//method to return a rectangle of the spaceship's position to check for collisions
+Rectangle Spaceship::GetRect()
+{
+    return {position.x, position.y, float(image.width), float(image.height)};
+}
+
+//reset the lasers and position of the spaceship
+void Spaceship::Reset()
+{
+    position.x = (GetScreenWidth() - image.width) / 2.0f;
+    position.y = GetScreenHeight() - image.height - 100;
+    lasers.clear();
 }

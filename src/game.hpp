@@ -12,6 +12,8 @@ class Game
         void Draw();
         void Update();
         void HandleInput();
+        bool run;
+        int lives;
 
     private:
         Spaceship spaceship;
@@ -34,5 +36,10 @@ class Game
         MysteryShip mysteryShip;
         float mysteryShipSpawnCooldown;
         float timeLastSpawn;
+
+        void CheckForCollisions();
+        void GameOver();
+        void Reset();
+        void InitGame();
 
 };
