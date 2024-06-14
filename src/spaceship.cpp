@@ -7,12 +7,14 @@ Spaceship::Spaceship()
     position.x = (GetScreenWidth() - image.width)/2;
     position.y = GetScreenHeight()- image.height - 100;
     lastShotTime = 0;
+    laser = LoadSound("Sounds/laser.ogg");
 }
 
 //Spaceship destructor unloads image
 Spaceship::~Spaceship()
 {
     UnloadTexture(image);
+    UnloadSound(laser);
 }
 
 //Draws the spaceship on screen at a certain position
@@ -51,6 +53,7 @@ void Spaceship::ShootLaser()
     {
         lasers.push_back(Laser({position.x + image.width/2 - 2,position.y},-6));
         lastShotTime = GetTime();
+        PlaySound(laser);
     }
 }
 

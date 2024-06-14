@@ -1,18 +1,25 @@
 #include "game.hpp"
 #include <iostream>
+#include <fstream>
 using namespace std;
 
 //Constructor that initializes the game by creating obstacles, aliens, initializing the movement of the aliens + alien laser cooldown and mysteryship + spawn rate and amount of lives
 //and game should be running
+//load sounds too
 Game::Game()
 {
+    music = LoadMusicStream("Sounds/music.ogg");
+    explosion = LoadSound("Sounds/explosion.ogg");
     InitGame();
+    PlayMusicStream(music);
 }
 
-//Destructor that unloads the images of the aliens once the game is done
+//Destructor that unloads the images of the aliens and sounds once the game is done
 Game::~Game()
 {
     Alien::UnloadImages();
+    UnloadMusicStream(music);
+    UnloadSound(explosion);
 }
 
 //Update game state
@@ -57,6 +64,7 @@ void Game::Update()
     }
     else
     {
+        //reset the game
         if(IsKeyDown(KEY_ENTER))
         {
             Reset();
@@ -227,7 +235,7 @@ void Game::AlienShoot()
     }
 }
 
-//method to check if there are collsions between objects or lasers and properly deletes them from the screen
+//method to check if there are collsions between objects or lasers and properly deletes them from the screen and update score/high score
 void Game::CheckForCollisions()
 {
     //spaceship lasers
@@ -238,6 +246,21 @@ void Game::CheckForCollisions()
         {
             if(CheckCollisionRecs(it -> GetRect(), laser.GetRect()))
             {
+                PlaySound(explosion);
+                if(it -> type == 1)
+                {
+                    score += 100;
+                }
+                else if(it -> type == 2)
+                {
+                    score += 200;
+                }
+                else if(it -> type == 3)
+                {
+                    score += 300;
+                }
+
+                CheckHighScore();
                 it = aliens.erase(it);
                 laser.active = false;
             }
@@ -266,8 +289,11 @@ void Game::CheckForCollisions()
 
         if(CheckCollisionRecs(mysteryShip.GetRect(), laser.GetRect()))
         {
+            PlaySound(explosion);
             mysteryShip.alive = false;
             laser.active = false;
+            score += 500;
+            CheckHighScore();
         }
     }
 
@@ -345,6 +371,51 @@ void Game::InitGame()
     mysteryShipSpawnCooldown = GetRandomValue(10,20);
     lives = 3;
     run = true;
+    score = 0;
+    highScore = LoadHighScore();
+}
+
+//check if current score is higher than old high score and update if necessary
+void Game::CheckHighScore()
+{
+    if(score > highScore)
+    {
+        highScore = score;
+        SaveHighScore(highScore);
+    }
+}
+
+//save high score in a text file 
+void Game::SaveHighScore(int highScore)
+{
+    ofstream highScoreFile("highscore.txt");
+    if(highScoreFile.is_open())
+    {
+        highScoreFile << highScore;
+        highScoreFile.close();
+    }
+    else
+    {
+        cerr << "Failed to save highscore" << endl;
+    }
+}
+
+//load high score form text file
+int Game::LoadHighScore()
+{
+    int loadedHighScore = 0;
+    ifstream highScoreFile("highscore.txt");
+    if(highScoreFile.is_open())
+    {
+        highScoreFile >> loadedHighScore;
+        highScoreFile.close();
+    }
+    else
+    {
+        cerr << "Failed to load highscore" << endl;
+    }
+
+    return loadedHighScore;
 }
 
 //reset all the objects 

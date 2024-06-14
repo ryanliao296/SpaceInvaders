@@ -14,6 +14,9 @@ class Game
         void HandleInput();
         bool run;
         int lives;
+        int score;
+        int highScore;
+        Music music;
 
     private:
         Spaceship spaceship;
@@ -41,5 +44,10 @@ class Game
         void GameOver();
         void Reset();
         void InitGame();
+        void CheckHighScore();
+        void SaveHighScore(int highScore);
+        int LoadHighScore();
+
+        Sound explosion;
 
 };
